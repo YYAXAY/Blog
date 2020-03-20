@@ -1,0 +1,68 @@
+{% extends 'common/base.html' %}
+
+<!--导入分页展示的宏-->
+{% from 'common/macro.html' import pagination_show %}
+
+{% block title %}搜索结果{% endblock %}
+
+{% block page_content %}
+<!--展示搜索的用户-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">搜索用户结果如下</h3>
+    </div>
+    <div class="panel-body">
+        {% if users %}
+        {% for u in users %}
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{{url_for('post.post_personal', uid=u.id)}}">{{u.username}}</a></li>
+        </ul>
+        {% endfor %}
+        <!--展示分页导航条，继续定位到搜索的所有用户展示页-->
+        {{ pagination_show(pagination_u, 'main.search_results', query=query) }}
+        {% else %}
+        <div class="alert alert-success" role="alert">未找到任何相关用户</div>
+        {% endif %}
+    </div>
+</div>
+<hr />
+<!--展示搜索的贴子-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">搜索贴子结果如下</h3>
+    </div>
+    <div class="panel-body">
+        {% if results %}
+        {% for r in results %}
+        <hr style="margin-top: 10px; margin-bottom: 10px;"/>
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object" src="{{url_for('static', filename='upload/'+r.user.icon)}}"
+                         style="width: 64px; height: 64px;" alt="icon">
+                </a>
+            </div>
+            <div class="media-body">
+                <div style="float: right" class="post-date">{{ r.timestamp }}</div>
+                <h3 class="media-heading">{{r.user.username}}</h3>
+                {% if r.content_html %}
+                <h4 class="media-heading"
+                    style="overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp:2;">
+                    {{r.content_html | safe}}</h4><a href="{{ url_for('post.post_detail', id=r.id)}}">查看详情</a>
+                {% else %}
+                <h4 class="media-heading"
+                    style="overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp:2;">
+                    {{r.content}}</h4><a href="{{ url_for('post.post_detail', id=r.id)}}">查看详情</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <hr/>
+        <!--展示分页导航条，继续定位到搜索的所有贴子展示页-->
+        {{ pagination_show(pagination_p, 'main.search_results', query=query) }}
+        {% else %}
+        <div class="alert alert-info" role="alert">未找到任何相关贴子</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

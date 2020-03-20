@@ -1,0 +1,39 @@
+{% extends 'common/base.html' %}
+
+<!--导入分页展示的宏-->
+{% from 'common/macro.html' import pagination_show %}
+
+<!--富文本显示编辑框-->
+{% block scripts %} {{ super() }} {{ pagedown.include_pagedown() }} {% endblock %}
+
+{% block title %}博客详情{% endblock %}
+
+{% block page_content %}
+<!--富文本展示该博客详情，保留原格式-->
+{% if post.content_html %}
+    <h4 class="media-heading">{{post.content_html | safe}}</h4>
+{% else %}
+    <h4 class="media-heading">{{post.content}}</h4>
+{% endif %}
+<!--快速渲染-->
+{{wtf.quick_form(form)}}
+<!--评论展示-->
+{% for c in comments %}
+    <hr style="margin-top: 10px; margin-bottom: 10px;" />
+    <div class="media">
+        <div class="media-left">
+            <a href="#">
+                <img class="media-object" src="{{url_for('static', filename='upload/'+c.user.icon)}}" style="width: 64px; height: 64px;" alt="icon">
+            </a>
+        </div>
+        <div class="media-body">
+            <div style="float: right" class="post-date">{{ c.timestamp }}</div>
+            <a href="{{url_for('post.post_personal', uid=c.user.id)}}"> <h4 class="media-heading">{{c.user.username}}</h4> </a>
+            <h4 class="media-heading">{{c.content}}</h4>
+        </div>
+    </div>
+{% endfor %}
+<hr />
+<!--展示分页导航条，继续定位到当前贴子的详情页-->
+{{ pagination_show(pagination, 'post.post_detail', id=post.id) }}
+{% endblock %}

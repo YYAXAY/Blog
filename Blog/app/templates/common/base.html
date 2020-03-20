@@ -1,0 +1,95 @@
+{% extends 'bootstrap/base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}光电博客{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" style="border-radius: 0px">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{url_for('main.index')}}">光电博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">今日推荐<span class="sr-only">(current)</span></a></li>
+                <li><a target="_blank" href="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">教程</a></li>
+                <li><a target="_blank" href="https://v3.bootcss.com/">Bootstrap</a></li>
+                <li><a href="#">本站源码</a></li>
+                <li><a href="#">关于我们</a></li>
+
+                <!--以下为复选框-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">分类<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">新闻</a></li>
+                        <li><a href="#">体育</a></li>
+                        <li><a href="#">娱乐</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">学习</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">生活</a></li>
+                         <li role="separator" class="divider"></li>
+                        <li><a target="_blank" href="http://www.qdaily.com/aboutus.html">好奇心日报</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--以下form为搜索框-->
+            <form class="navbar-form navbar-left" action="{{url_for('main.search')}}" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="search" placeholder="搜索用户或贴子">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <!--右侧登陆注册-->
+            <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+                <li><img src="{{url_for('static', filename='upload/'+current_user.icon)}}" style="width: 64px; height: 64px"></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{current_user.username}}<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('user.profile')}}">个人信息</a></li>
+                        <li><a href="{{url_for('user.change_password')}}">修改密码</a></li>
+                        <li><a href="{{url_for('user.change_email')}}">修改邮箱</a></li>
+                        <li><a href="{{url_for('user.change_icon')}}">修改头像</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{url_for('user.logout')}}">退出</a></li>
+            {% else %}
+                <li><a href="{{url_for('user.login')}}">登录</a></li>
+                <li><a href="{{url_for('user.register')}}">注册</a></li>
+            {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!--get_flashed_messages获取所有的flash消息-->
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible"
+             role="alert">
+            <button type="button" class="close"
+                    data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% block page_content %}默认内容{% endblock %}
+</div>
+{% endblock %}
+

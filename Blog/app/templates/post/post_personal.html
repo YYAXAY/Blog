@@ -1,0 +1,37 @@
+{% extends 'common/base.html' %}
+
+<!--导入分页展示的宏-->
+{% from 'common/macro.html' import pagination_show %}
+
+{% block title %}查看所有{% endblock %}
+
+{% block page_content %}
+<h1 class="media-heading">{{user_p.username}}的所有贴子</h1>
+{% for p in posts %}
+<hr style="margin-top: 10px; margin-bottom: 10px;"/>
+<div class="media">
+    <div class="media-left">
+        <a href="#">
+            <img class="media-object" src="{{url_for('static', filename='upload/'+p.user.icon)}}"
+                 style="width: 64px; height: 64px;" alt="icon">
+        </a>
+    </div>
+    <div class="media-body">
+        <div style="float: right" class="post-date">{{ p.timestamp }}</div>
+        <h3 class="media-heading">{{p.user.username}}</h3>
+        {% if p.content_html %}
+        <h4 class="media-heading"
+            style="overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp:2;">
+            {{p.content_html | safe}}</h4><a href="{{ url_for('post.post_detail', id=p.id)}}">查看详情</a>
+        {% else %}
+        <h4 class="media-heading"
+            style="overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp:2;">
+            {{p.content}}</h4><a href="{{ url_for('post.post_detail', id=p.id)}}">查看详情</a>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+<hr/>
+<!--展示分页导航条，继续定位到当前用户的所有贴子展示页-->
+{{ pagination_show(pagination, 'post.post_personal', uid=user_p.id) }}
+{% endblock %}
