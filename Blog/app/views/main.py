@@ -50,7 +50,7 @@ def search():
 def search_results(query):
     page = request.args.get('page', 1, type=int)
     pagination_u = User.query.filter(User.username.contains(query)).paginate(page, per_page=5, error_out=False)    # 模糊查找所有相关用户
-    pagination_p = Posts.query.filter(Posts.content.contains(query)).paginate(page, per_page=10, error_out=False)  # 模糊查找相关贴子
+    pagination_p = Posts.query.filter(Posts.content.contains(query), Posts.rid == 0).paginate(page, per_page=10, error_out=False)  # 模糊查找相关贴子
     users = pagination_u.items
     results = pagination_p.items
     return render_template('/main/search_results.html', query=query, users=users, results=results, pagination_u=pagination_u, pagination_p=pagination_p)
